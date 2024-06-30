@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <script>
+        // coords is an array of arrays
+        var coords = []
+        var distances
+        var coordsString = ""
+
+
+        function getCoords() {
+            var inputs, index;
+
+            // get the inputs
+            inputs = document.getElementsByTagName('input');
+
+            // extract values and map them onto the coords array
+            for (index = 0; index < inputs.length; index += 2) {
+                coords[index / 2] = [inputs[index].value, inputs[index + 1].value]
+                
+                // turn coords into string for api
+                coordsString += inputs[index].value + "," + inputs[index + 1].value + ";"
+                 
+            }
+            // delete the last ;
+            coordsString = coordsString.slice(0, -1);
+            
+            
+            console.log(coordsString);
+        }
+
+
+
+        async function getDistances() {
+            console.log("waiting for a response...")
+
+
+            // fetch distances and extract distances
+            let a = await fetch(`https://router.project-osrm.org/table/v1/car/${coordsString}?sources=0&annotations=distance`);
+            let b = await a.json();
+            distances = await b.distances[0];
+
+            // the first value is always zero so we delete it
+            distances = distances.slice(1);
+
+            console.log("got it!")
+
+            document.getElementById("result").innerText = `The distance is ${distances[0]/1000} km`
+
+        }
+
+
+    </script>
+    <label for="slong">Source longtitude:</label>
+    <input id="slong" type="text" value="17.1077"><br>
+    <label for="slat">Source latitude:</label>
+    <input id="slat" type="text" value="48.1486"><br><br>
+
+    <label for="long1">Second longtitude:</label>
+    <input id="long1" type="text" value="14.4378"><br>
+    <label for="lat1">Second longtitude:</label>
+    <input id="lat1" type="text" value="50.0755"><br>
+
+    <button onclick="getCoords(); getDistances()">Click me</button>
+
+    <p id="result"></p>
+
+</body>
+
+</html>
