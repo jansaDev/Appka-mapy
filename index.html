@@ -8,72 +8,95 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
+    <script src="script.js"></script>
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #f5d4d4;
+
+        }
+
+        div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: left;
+        }
+
+        input[type=text] {
+            display: block;
+            width: 100px;
+            padding: 0 16px 0 12px;
+            line-height: 30px;
+            height: 32px;
+            border: 1px solid #dddbda;
+            border-radius: 4px;
+            background-color: #fff;
+            color: rgb(8, 7, 7);
+            transition: border .1s linear, background-color .1s linear;
+
+            :focus {
+                border-color: #1b96ff;
+                color: var(--sds-c-input-text-color-focus);
+                box-shadow: rgb(1, 118, 211) 0px 0px 3px 0px;
+            }
+
+        }
+
+        label {
+            color: #B4886B;
+            font-weight: bold;
+            display: block;
+        }
+
+        button {
+
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            outline: 0;
+            cursor: pointer;
+            text-align: center;
+            border: 0;
+            padding: 7px 16px;
+            min-height: 36px;
+            min-width: 36px;
+            color: #ffffff;
+            background: #008060;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
+
+            :hover {
+                background: #006e52;
+            }
+
+        }
+    </style>
 </head>
 
 <body>
 
-    <script>
-        // coords is an array of arrays
-        var coords = []
-        var distances
-        var coordsString = ""
+    <div>
+        <label for="Olong">Search origin longtitude:</label>
+        <input id="Olong" type="number" value="14.4378"><br>
+
+        <label for="Olat">Search origin latitude:</label>
+        <input id="Olat" type="number" value="50.0755"><br><br>
 
 
-        function getCoords() {
-            var inputs, index;
+        <label for="long1">POI1 longtitude:</label>
+        <input class="POI" id="long1" type="number" value="14.4378"><br>
 
-            // get the inputs
-            inputs = document.getElementsByTagName('input');
+        <label for="lat1">POI1 latitude:</label>
+        <input class="POI" id="lat1" type="number" value="50.0755"><br>
 
-            // extract values and map them onto the coords array
-            for (index = 0; index < inputs.length; index += 2) {
-                coords[index / 2] = [inputs[index].value, inputs[index + 1].value]
-                
-                // turn coords into string for api
-                coordsString += inputs[index].value + "," + inputs[index + 1].value + ";"
-                 
-            }
-            // delete the last ;
-            coordsString = coordsString.slice(0, -1);
-            
-            
-            console.log(coordsString);
-        }
-
-
-
-        async function getDistances() {
-            console.log("waiting for a response...")
-
-
-            // fetch distances and extract distances
-            let a = await fetch(`https://router.project-osrm.org/table/v1/car/${coordsString}?sources=0&annotations=distance`);
-            let b = await a.json();
-            distances = await b.distances[0];
-
-            // the first value is always zero so we delete it
-            distances = distances.slice(1);
-
-            console.log("got it!")
-
-            document.getElementById("result").innerText = `The distance is ${distances[0]/1000} km`
-
-        }
-
-
-    </script>
-    <label for="slong">Source longtitude:</label>
-    <input id="slong" type="text" value="17.1077"><br>
-    <label for="slat">Source latitude:</label>
-    <input id="slat" type="text" value="48.1486"><br><br>
-
-    <label for="long1">Second longtitude:</label>
-    <input id="long1" type="text" value="14.4378"><br>
-    <label for="lat1">Second longtitude:</label>
-    <input id="lat1" type="text" value="50.0755"><br>
-
-    <button onclick="getCoords(); getDistances()">Click me</button>
-
+        <button onclick="collectInputs(); getDistances()">Click me</button>
+    </div>
     <p id="result"></p>
 
 </body>
