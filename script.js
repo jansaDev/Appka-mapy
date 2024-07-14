@@ -4,6 +4,7 @@ var origin;
 var distances = [] //array[sources] of arrays[POIs] - distances from every source
 var sources = []
 var ratings = []
+var APIdata
 
 class Coord {
     constructor(long, lat) {
@@ -61,8 +62,8 @@ async function getDistances() {
     console.log(apiStringCoords, apiStringSources, apiStringDestinations)
     // fetch distances and extract distances
     let a = await fetch(`https://router.project-osrm.org/table/v1/car/${apiStringCoords}?sources=${apiStringSources}&destinations=${apiStringDestinations}&annotations=distance`);
-    let b = await a.json();
-    distances = await b.distances;
+    APIdata = await a.json();
+    distances = await APIdata.distances;
 
 
 
@@ -75,6 +76,9 @@ function getRatings() {
         ratings[i] = createRating(e)
     })
 
+    let MaxRatingIndex = ratings.indexOf(Math.max(...ratings));
+
+    alert("Nejlepší je source " + (MaxRatingIndex + 1) + ", v ulici " + APIdata.sources[MaxRatingIndex].name);
     console.table(distances)
     console.table(ratings)
 }
