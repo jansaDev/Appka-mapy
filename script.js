@@ -3,6 +3,7 @@ var POIs = [];
 var origin;
 var distances = [] //array[sources] of arrays[POIs] - distances from every source
 var sources = []
+var ratings = []
 
 class Coord {
     constructor(long, lat) {
@@ -15,7 +16,6 @@ class Coord {
 }
 
 
-
 // fills the POIs and origin
 function collectInputs() {
     let POIinputs;
@@ -25,7 +25,7 @@ function collectInputs() {
         document.getElementById("Olat").value);
 
     POIinputs = document.getElementsByClassName('POI');
-    // extract values and map them onto the coords array
+    // extract values and mapRange them onto the coords array
     for (let index = 0; index < POIinputs.length; index += 2) {
         POIs[index / 2] = new Coord(POIinputs[index].value, POIinputs[index + 1].value)
     }
@@ -37,7 +37,7 @@ async function getDistances() {
     console.log("waiting for a response...")
 
 
-    sources = createGrid()
+    sources = createGrid(600, 4)
 
     // formatting the data for the OSRM routing matrix api, fucking hell
     let apiStringCoords = ""
@@ -64,9 +64,19 @@ async function getDistances() {
     let b = await a.json();
     distances = await b.distances;
 
-    console.table(distances)
+
 
     console.log("got it!")
+}
+
+
+function getRatings() {
+    distances.forEach((e, i) => {
+        ratings[i] = createRating(e)
+    })
+
+    console.table(distances)
+    console.table(ratings)
 }
 
 
@@ -79,12 +89,12 @@ function createGrid(sidelenght = 1000, num = 3) {
     let spacingLong = sidelenght / 111320 / Math.cos(origin.lat * Math.PI / 180) / (num - 1);
 
     // first coord of the grid from which others are spaced
-    let start = new Coord(origin.long - spacingLong * (num - 1) / 2, origin.lat - spacingLat * (num - 1) / 2)
+    let start = new Coord(origin.long - spacingLong * (num - 1) / 2, origin.lat + spacingLat * (num - 1) / 2)
 
     // creating the grid
     for (let i = 0; i < num; i++) {
         for (let j = 0; j < num; j++) {
-            grid[i * num + j] = new Coord(start.long + j * spacingLong, start.lat + i * spacingLat)
+            grid[i * num + j] = new Coord(start.long + j * spacingLong, start.lat - i * spacingLat)
         }
     }
 
@@ -93,19 +103,25 @@ function createGrid(sidelenght = 1000, num = 3) {
 
 
 //creates rating from an array of importances of values 0-1, and array of distances
-function createRating(importances, distancess, maxdistance = 1, wantArray = false) {
-    let ratings = []
+function createRating(_distances, maxdistance = 1000, wantArray = false, _importances = []) {
+    let _ratings = []
+    for (let i = 0; i < _distances.length; i++) {
+        _importances[i] = 1;
+    }
 
-    distancess.forEach((distance, i) => {
-        ratings[i] = map(distance, 0, maxdistance, 1, 0) * importances[i] / sumArray(importances)
+
+    _distances.forEach((distance, i) => {
+        // returns a rating in whole percents
+        _ratings[i] = Math.round(mapRange(distance, 0, maxdistance, 1, 0) * _importances[i] / sumArray(_importances) * 100)
     })
 
-    return wantArray ? ratings : sumArray(ratings); //return either array of ratings or the rating{}
+    return wantArray ? _ratings : sumArray(_ratings); //return either array of ratings or the rating{}
 }
 
 
 // maps number from range to another range, output is capped to outMax
-const map = (num, inMin, inMax, outMin, outMax) => num >= inMax ? outMax : (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+const mapRange = (num, inMin, inMax, outMin, outMax) => num >= inMax ? outMax : (num - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+
 // sums all the numbers in an array
 function sumArray(array) {
     let result = 0
@@ -113,4 +129,16 @@ function sumArray(array) {
         result += element;
     })
     return result;
+}
+
+
+// function to purely display the data
+function loadTableData(array) {
+    const table = document.getElementById("testBody");
+    array.forEach(item => {
+        let row = table.insertRow();
+        item.forEach
+        let col = row.insertCell(0);
+        col.innerHTML = item;
+    });
 }

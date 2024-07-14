@@ -7,98 +7,61 @@
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <!-- this is for the leaflet map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
+
+
+    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-    <style>
-        * {
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        body {
-            background-color: #f5d4d4;
-
-        }
-
-        div {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: left;
-        }
-
-        input[type=text] {
-            display: block;
-            width: 100px;
-            padding: 0 16px 0 12px;
-            line-height: 30px;
-            height: 32px;
-            border: 1px solid #dddbda;
-            border-radius: 4px;
-            background-color: #fff;
-            color: rgb(8, 7, 7);
-            transition: border .1s linear, background-color .1s linear;
-
-            :focus {
-                border-color: #1b96ff;
-                color: var(--sds-c-input-text-color-focus);
-                box-shadow: rgb(1, 118, 211) 0px 0px 3px 0px;
-            }
-
-        }
-
-        label {
-            color: #B4886B;
-            font-weight: bold;
-            display: block;
-        }
-
-        button {
-
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            outline: 0;
-            cursor: pointer;
-            text-align: center;
-            border: 0;
-            padding: 7px 16px;
-            min-height: 36px;
-            min-width: 36px;
-            color: #ffffff;
-            background: #008060;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 14px;
-            box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
-
-            :hover {
-                background: #006e52;
-            }
-
-        }
-    </style>
 </head>
 
 <body>
+    <!-- leaflet map -->
+    <div id="map"></div>
 
-    <div>
+
+    <button onclick="collectInputs(); getDistances()">Send to api</button>
+    <button onclick="showOnMap();">Show on map</map></button>
+    <button onclick="getRatings();">Console ratings</button>
+
+    <div id="inputs">
         <label for="Olong">Search origin longtitude:</label>
-        <input id="Olong" type="number" value="14.4378"><br>
+        <input id="Olong" type="number" value="-73.99"><br>
 
         <label for="Olat">Search origin latitude:</label>
-        <input id="Olat" type="number" value="50.0755"><br><br>
+        <input id="Olat" type="number" value="40.9359"><br><br>
 
 
         <label for="long1">POI1 longtitude:</label>
-        <input class="POI" id="long1" type="number" value="14.4378"><br>
+        <input class="POI" id="long1" type="number" value="-73.994""><br>
 
-        <label for="lat1">POI1 latitude:</label>
-        <input class="POI" id="lat1" type="number" value="50.0755"><br>
+        <label for=" lat1">POI1 latitude:</label>
+        <input class="POI" id="lat1" type="number" value="40.9358"><br>
 
-        <button onclick="collectInputs(); getDistances()">Click me</button>
+
+        <label for="long2">POI2 longtitude:</label>
+        <input class="POI" id="long2" type="number" value="-73.989""><br>
+
+        <label for=" lat2">POI3 latitude:</label>
+        <input class="POI" id="lat2" type="number" value="40.935"><br>
+
     </div>
-    <p id="result"></p>
 
+
+    <table id="myTable" class="table table-borderless table-striped table-earning">
+        <thead>
+            <tr>
+                <th>distance</th>
+            </tr>
+        </thead>
+        <tbody id="testBody"></tbody>
+    </table>
+    <script src="LeafletMap.js"></script>
 </body>
 
 </html>
