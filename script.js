@@ -1,10 +1,14 @@
 // coords is an array of arrays
-var POIs = [];
-var origin;
-var distances = [] //array[sources] of arrays[POIs] - distances from every source
-var sources = []
-var ratings = []
-var APIdata
+let POIs = [];
+let origin;
+
+let sources = []
+let importances = []
+let distances = [] //array[sources] of arrays[POIs] - distances from every source
+let ratings = []
+
+let APIdata
+
 
 class Coord {
     constructor(long, lat) {
@@ -18,8 +22,20 @@ class Coord {
 
 
 // fills the POIs and origin
-function collectInputs() {
+async function collectInputs() {
     let POIinputs;
+
+    // check if the geosearch is active
+    let GeoInput = document.getElementById("geoSearch").value
+    if (GeoInput) {
+        let a = await fetch(`https://geocode.maps.co/search?q=${GeoInput}&api_key=6695595f3ffe2601568820kwz193465`)
+        let b = await a.json()
+        origin = new Coord(b[0].lon, b[0].lat)
+        console.log(origin)
+
+        return;
+    }
+
 
     // get the inputs
     origin = new Coord(document.getElementById("Olong").value,
@@ -38,7 +54,7 @@ async function getDistances() {
     console.log("waiting for a response...")
 
 
-    sources = createGrid(600, 4)
+    sources = createGrid(1500, 5)
 
     // formatting the data for the OSRM routing matrix api, fucking hell
     let apiStringCoords = ""
@@ -64,6 +80,7 @@ async function getDistances() {
     let a = await fetch(`https://router.project-osrm.org/table/v1/car/${apiStringCoords}?sources=${apiStringSources}&destinations=${apiStringDestinations}&annotations=distance`);
     APIdata = await a.json();
     distances = await APIdata.distances;
+    console.log(APIdata)
 
 
 
@@ -73,7 +90,7 @@ async function getDistances() {
 
 function getRatings() {
     distances.forEach((e, i) => {
-        ratings[i] = createRating(e)
+        ratings[i] = createSourceRating(e)
     })
 
     let MaxRatingIndex = ratings.indexOf(Math.max(...ratings));
@@ -106,20 +123,20 @@ function createGrid(sidelenght = 1000, num = 3) {
 }
 
 
-//creates rating from an array of importances of values 0-1, and array of distances
-function createRating(_distances, maxdistance = 1000, wantArray = false, _importances = []) {
+//creates rating from an array of importances of values 0-1, and array of distances, later used for individual sources
+function createSourceRating(_distances, maxdistance = 1000, wantArray = false,) {
     let _ratings = []
     for (let i = 0; i < _distances.length; i++) {
-        _importances[i] = 1;
+        importances[i] = 1;
     }
 
 
     _distances.forEach((distance, i) => {
         // returns a rating in whole percents
-        _ratings[i] = Math.round(mapRange(distance, 0, maxdistance, 1, 0) * _importances[i] / sumArray(_importances) * 100)
+        _ratings[i] = Math.round(mapRange(distance, 0, maxdistance, 1, 0) * importances[i] / sumArray(importances) * 100)
     })
 
-    return wantArray ? _ratings : sumArray(_ratings); //return either array of ratings or the rating{}
+    return wantArray ? _ratings : sumArray(_ratings); //return either array of individual ratings or the rating
 }
 
 

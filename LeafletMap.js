@@ -1,5 +1,3 @@
-var map = L.map('map', { zoomControl: false }).setView([40.9359, -73.9951], 15);
-
 var greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -27,24 +25,53 @@ var yellowIcon = new L.Icon({
 });
 
 
+
+var map = L.map('map', {
+    zoomControl: false,
+    zoomSnap: 0.1,
+    zoomDelta: 1,
+    wheelPxPerZoomLevel: 40,
+    wheelDebounceTime: 20
+}).setView([40.9359, -73.9951], 15);
+
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
 
-// gets the lat long and creates a marker
+// shows all the stuff on the map
+let SourcesMarkers = []
+let POIsMarkers = []
+let OriginMarker;
+let polygons = []
 function showOnMap() {
-    L.marker([origin.lat, origin.long], { icon: yellowIcon }).addTo(map)
+    OriginMarker = L.marker([origin.lat, origin.long], { icon: yellowIcon }).addTo(map)
         .bindPopup("origin");
 
     sources.forEach((element, i) => {
-        let m = L.marker([element.lat, element.long], { icon: greenIcon }).addTo(map)
-            .bindPopup(`source ${i + 1}`)
+        if (SourcesMarkers[i] != undefined) {
+            map.removeLayer(SourcesMarkers[i]);
+            map.removeLayer(polygons[i]);
+
+        };
+
+        SourcesMarkers[i] = L.marker([element.lat, element.long], { icon: greenIcon }).addTo(map)
+            .bindPopup(`<b>source ${i + 1}</b><br>rating: ${ratings[i]}`)
+
+        polygons[i] = L.circle([element.lat, element.long], {
+            color: 'green',
+            fillOpacity: ratings[i] / 100,
+            radius: 200,
+            stroke: false
+        }).addTo(map);
     })
 
     POIs.forEach((element, i) => {
-        L.marker([element.lat, element.long], { icon: redIcon }).addTo(map)
+        if (POIsMarkers[i] != undefined) {
+            map.removeLayer(POIsMarkers[i]);
+        };
+        POIsMarkers[i] = L.marker([element.lat, element.long], { icon: redIcon }).addTo(map)
             .bindPopup(`POI ${i + 1}`);
     })
 }
