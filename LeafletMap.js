@@ -1,4 +1,4 @@
-var greenIcon = new L.Icon({
+const greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
@@ -6,7 +6,7 @@ var greenIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
-var redIcon = new L.Icon({
+const redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
@@ -15,7 +15,7 @@ var redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-var yellowIcon = new L.Icon({
+const yellowIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
     iconSize: [25, 41],
@@ -25,7 +25,7 @@ var yellowIcon = new L.Icon({
 });
 
 
-
+// initilize the map
 var map = L.map('map', {
     zoomControl: false,
     zoomSnap: 0.1,
@@ -50,27 +50,32 @@ function showOnMap() {
         .bindPopup("origin");
 
     sources.forEach((element, i) => {
+        // if there already is marker, delete it
         if (SourcesMarkers[i] != undefined) {
             map.removeLayer(SourcesMarkers[i]);
             map.removeLayer(polygons[i]);
-
         };
 
-        SourcesMarkers[i] = L.marker([element.lat, element.long], { icon: greenIcon }).addTo(map)
-            .bindPopup(`<b>source ${i + 1}</b><br>rating: ${ratings[i]}`)
+        // create a marker at the coords and bind a popup
+        // SourcesMarkers[i] = L.marker([element.lat, element.long], { icon: greenIcon }).addTo(map)
+        //     .bindPopup(`<b>source ${i + 1}</b><br>rating: ${ratings[i]}`)
 
+        // create a circle around the marker
         polygons[i] = L.circle([element.lat, element.long], {
             color: 'green',
             fillOpacity: ratings[i] / 100,
-            radius: 200,
+            radius: sidelenght / (res - 1) / 2,
             stroke: false
         }).addTo(map);
     })
 
     POIs.forEach((element, i) => {
+        // if there already is marker, delete it
         if (POIsMarkers[i] != undefined) {
             map.removeLayer(POIsMarkers[i]);
         };
+
+        // create a marker at the coords and bind a popup
         POIsMarkers[i] = L.marker([element.lat, element.long], { icon: redIcon }).addTo(map)
             .bindPopup(`POI ${i + 1}`);
     })

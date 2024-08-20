@@ -10,54 +10,52 @@
     <!-- this is for the leaflet map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-
-
-
+    <!-- this is mine -->
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <script src="other.js"></script>
     <script defer src="LeafletMap.js"></script>
-
 </head>
 
 <body>
     <!-- leaflet map -->
-    <div id="map" style="min-height: 100px;"></div>
-
-    <div class="buttons">
-        <button onclick="collectInputs(); getDistances().then(() => {getRatings();});">Sumbit inputs</button>
-        <button onclick="showOnMap();">Show on map</map></button>
-    </div>
+    <div id="map"></div>
 
 
+
+    <!-- inputs -->
     <div id="inputs">
-        <input type="text" value="" id="geoSearch">
+        <fieldset>
+            <input type="text" value="" placeholder="Praha 7" id="geoSearch">
 
-        <label for="Olong">Search origin longtitude:</label>
-        <input id="Olong" type="number" value="-73.99"><br>
+            <label for="Olong">Search origin longtitude:</label>
+            <input id="Olong" type="number" value="-73.99"><br>
 
-        <label for="Olat">Search origin latitude:</label>
-        <input id="Olat" type="number" value="40.9359"><br><br>
+            <label for="Olat">Search origin latitude:</label>
+            <input id="Olat" type="number" value="40.9359">
+        </fieldset>
 
+        <fieldset>
+            <label for="POI_1_long">POI1 longtitude:</label>
+            <input class="POI" id="POI_1_long" type="number" value="-73.994""><br>
 
-        <label for="POI_1_long">POI1 longtitude:</label>
-        <input class="POI" id="POI_1_long" type="number" value="-73.994""><br>
+            <label for=" POI_1_lat">POI1 latitude:</label>
+            <input class="POI" id="POI_1_lat" type="number" value="40.9358"><br>
+        </fieldset>
 
-        <label for=" POI_1_lat">POI1 latitude:</label>
-        <input class="POI" id="POI_1_lat" type="number" value="40.9358"><br>
+        <fieldset>
+            <label for="POI_2_long">POI2 longtitude:</label>
+            <input class="POI" id="POI_2_long" type="number" value="-73.9894""><br>
 
-
-        <label for="POI_2_long">POI2 longtitude:</label>
-        <input class="POI" id="POI_2_long" type="number" value="-73.9894""><br>
-
-        <label for=" POI_2_lat">POI2 latitude:</label>
-        <input class="POI" id="POI_2_lat" type="number" value="40.935"><br>
+            <label for=" POI_2_lat">POI2 latitude:</label>
+            <input class="POI" id="POI_2_lat" type="number" value="40.935"><br>
+        </fieldset>
+        <button onclick="doEverything();">Sumbit inputs</button>
 
     </div>
-
-
 
 </body>
 
