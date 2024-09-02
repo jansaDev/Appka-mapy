@@ -15,8 +15,8 @@
 
     <!-- this is mine -->
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-    <script src="other.js"></script>
+    <script defer src="script.js"></script>
+    <script defer src="other.js"></script>
     <script defer src="LeafletMap.js"></script>
 </head>
 
@@ -29,32 +29,56 @@
     <!-- inputs -->
     <div id="inputs">
         <fieldset>
-            <input type="text" value="" placeholder="Praha 7" id="geoSearch">
+            <input type="text" value="" placeholder="Praha 7" id="originGeoSearch" list="places">
 
             <label for="Olong">Search origin longtitude:</label>
-            <input id="Olong" type="number" value="-73.99"><br>
+            <input id="Olong" type="number" step="0.02" value="-73.99"><br>
 
             <label for="Olat">Search origin latitude:</label>
-            <input id="Olat" type="number" value="40.9359">
+            <input id="Olat" type="number" step="0.02" value="40.9359">
         </fieldset>
 
         <fieldset>
+            <input type="text" value="" placeholder="Praha 7" class="POIGeoSearch" list="places">
+
             <label for="POI_1_long">POI1 longtitude:</label>
-            <input class="POI" id="POI_1_long" type="number" value="-73.994""><br>
+            <input class="POI" id="POI_1_long" type="number" step="0.02" value="-73.934""><br>
 
             <label for=" POI_1_lat">POI1 latitude:</label>
-            <input class="POI" id="POI_1_lat" type="number" value="40.9358"><br>
+            <input class="POI" id="POI_1_lat" type="number" step="0.02" value="40.9758"><br>
         </fieldset>
 
         <fieldset>
+            <input type="text" value="" placeholder="Praha 7" class="POIGeoSearch" list="places">
+
             <label for="POI_2_long">POI2 longtitude:</label>
-            <input class="POI" id="POI_2_long" type="number" value="-73.9894""><br>
+            <input class="POI" id="POI_2_long" type="number" step="0.02" value="-73.9894""><br>
 
             <label for=" POI_2_lat">POI2 latitude:</label>
-            <input class="POI" id="POI_2_lat" type="number" value="40.935"><br>
+            <input class="POI" id="POI_2_lat" type="number" step="0.02" value="40.915"><br>
         </fieldset>
+        <label for="consoleTable">Console tables: </label>
+        <input type="checkbox" id="consoleTable">
         <button onclick="doEverything();">Sumbit inputs</button>
 
+        <input type="range" name="" id="res" min="1" max="14" value="10" list="markers">
+        <datalist id="markers">
+            <option value="2"></option>
+            <option value="4"></option>
+            <option value="6"></option>
+            <option value="8"></option>
+            <option value="10"></option>
+            <option value="12"></option>
+        </datalist>
+        <label for="res" id="resLabel">Resolution 10 × 10</label>
+
+
+        <datalist id="places">
+            <option value="Praha Staré Město"></option>
+            <option value="Rudolfínum"></option>
+            <option value="Břehová 7"></option>
+            <option value="Národní muzeum"></option>
+        </datalist>
     </div>
 
 </body>

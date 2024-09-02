@@ -24,6 +24,15 @@ const yellowIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+const blueIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [20, 30],
+    iconAnchor: [10, 30],
+    popupAnchor: [1, -34],
+    shadowSize: [30, 30]
+});
+
 
 // initilize the map
 var map = L.map('map', {
@@ -32,7 +41,7 @@ var map = L.map('map', {
     zoomDelta: 1,
     wheelPxPerZoomLevel: 40,
     wheelDebounceTime: 20
-}).setView([40.9359, -73.9951], 15);
+}).setView([40.9359, -73.9951], 11);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -44,34 +53,44 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 let SourcesMarkers = []
 let POIsMarkers = []
 let OriginMarker;
-let polygons = []
-function showOnMap() {
-    OriginMarker = L.marker([origin.lat, origin.long], { icon: yellowIcon }).addTo(map)
-        .bindPopup("origin");
+let sourcePolygons = []
+async function showOnMap() {
+    // jump the map to origin
+    map.panTo([origin.lat, origin.long])
+    // ORIGIN
+    if (OriginMarker) { map.removeLayer(OriginMarker) }
+
+    OriginMarker = L.marker([origin.lat, origin.long], { icon: yellowIcon }).addTo(map).bindPopup("origin");
+
+    // HEATMAP
+
+    // delete all the existing polygons
+    sourcePolygons.forEach((e, i) => {
+        if (sourcePolygons[i]) {
+            map.removeLayer(sourcePolygons[i]);
+        };
+    })
+
+    // reset the polygons array
+    sourcePolygons = []
 
     sources.forEach((element, i) => {
-        // if there already is marker, delete it
-        if (SourcesMarkers[i] != undefined) {
-            map.removeLayer(SourcesMarkers[i]);
-            map.removeLayer(polygons[i]);
-        };
-
         // create a marker at the coords and bind a popup
         // SourcesMarkers[i] = L.marker([element.lat, element.long], { icon: greenIcon }).addTo(map)
         //     .bindPopup(`<b>source ${i + 1}</b><br>rating: ${ratings[i]}`)
 
-        // create a circle around the marker
-        polygons[i] = L.circle([element.lat, element.long], {
-            color: 'green',
-            fillOpacity: ratings[i] / 100,
-            radius: sidelenght / (res - 1) / 2,
-            stroke: false
-        }).addTo(map);
+        // create a square around the source
+        sourcePolygons[i] = createSquare(element, sidelength / (res - 1), {
+            color: lerpColor(ratings[i], "FF0000", "90EE90"),
+            fillOpacity: 0.7
+        })
+        sourcePolygons[i].addTo(map);
     })
 
+    // POIS
     POIs.forEach((element, i) => {
         // if there already is marker, delete it
-        if (POIsMarkers[i] != undefined) {
+        if (POIsMarkers[i]) {
             map.removeLayer(POIsMarkers[i]);
         };
 
@@ -79,5 +98,17 @@ function showOnMap() {
         POIsMarkers[i] = L.marker([element.lat, element.long], { icon: redIcon }).addTo(map)
             .bindPopup(`POI ${i + 1}`);
     })
+
+
+    // LISTINGS
+    listings.forEach((element, i) => {
+        // if there already is marker, delete it
+        // if (listings[i]) {
+        //     map.removeLayer(POIsMlistingsarkers[i]);
+        // };
+        // create a marker at the coords and bind a popup
+        L.marker([element.lat, element.long], { icon: blueIcon }).addTo(map)
+    })
+
 }
 
